@@ -23,7 +23,9 @@ class Main():
         for i in range(0, runs):
             for person in self.People:
                 stock = random.choice(self.Stocks)
-                #self.Stocks.append(stock)
+                stock.encounter += 1
+                # for u in range(0, stock.encounter):
+                #     self.Stocks.append(stock)
                 print('Man came across stock ')
                 print('Stock risk is {0}'.format(stock.chance))
                 print('Man had {0}'.format(person.money))
@@ -77,6 +79,7 @@ class People():
 class Stocks():
     def __init__(self):
         self.chance = random.random()
+        self.encounter = 0
     
     
 if __name__ == "__main__":

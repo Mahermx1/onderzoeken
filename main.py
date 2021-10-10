@@ -6,6 +6,7 @@ class Main():
         self.People = []
         self.Stocks = []
         self.Wealth = 0
+        self.Avoid = False
 
     def create_population(self, size):
         self.People = []
@@ -19,20 +20,37 @@ class Main():
             stock = Stocks()
             self.Stocks.append(stock)
 
-    def RunIntoStock(self, runs):
-        for i in range(0, runs):
+    def AvoidIt(self, chance, risk):
+        if  (chance <= risk):
+            self.Avoid = False
+        else:
+            self.Avoid = True
+
+    def RunIntoStock(self, rounds):
+        for i in range(0, rounds):  
             for person in self.People:
-                stock = random.choice(self.Stocks)
-                stock.encounter += 1
-                # for u in range(0, stock.encounter):
-                #     self.Stocks.append(stock)
-                print('Man came across stock ')
-                print('Stock risk is {0}'.format(stock.chance))
-                print('Man had {0}'.format(person.money))
-                person.Trade(stock.chance)
-                print('And now {0}'.format(person.money))
-                person.Broke()
-                print('Is he broke {0}'.format(person.broke))
+                if (person.encounterchance <= 0.7):
+                    print('encountered a stock ')
+                    person.encounterchance = random.random()
+                    stock = random.choice(self.Stocks)
+                    print('Man came across stock ')
+                    print('Stock risk is {0}'.format(stock.risk))
+                    self.AvoidIt(person.chance, stock.risk)
+                    if (self.Avoid):
+                        print('Didnt avoid')
+                        stock.encounter += 1
+                        # for u in range(0, stock.encounter):
+                        #     self.Stocks.append(stock)
+                        print('Man had {0}'.format(person.money))
+                        person.Trade(stock.risk)
+                        print('And now {0}'.format(person.money))
+                        person.Broke()
+                        print('Is he broke {0}'.format(person.broke))
+                    else:
+                        print('avoided')
+
+                else:
+                    print('Didnt encounter')
                 print('---------------------------------')
 
             
@@ -44,9 +62,9 @@ class Main():
             self.Wealth += person.money
 
     def simulate(self):
-        self.create_population(10)
+        self.create_population(1000)
 
-        self.create_stocks(10)
+        self.create_stocks(100)
 
         self.RunIntoStock(1)
         
@@ -56,30 +74,34 @@ class Main():
 
     def results(self):
         print('amount of moeny left : {0}'.format(round(self.Wealth)))
-        print('amount of People left with more than 500: {0}'.format(len(self.People)))
+        print('amount of People who are not broke: {0}'.format(len(self.People)))
 
 
 class People():
     def __init__(self):
-        self.chance = 0.5
+        self.chance = random.uniform(0.3,0.6)
         self.money = 1000
         self.broke = False
+        self.encounterchance = random.random()
 
     def Broke(self):
         if (self.money <= 0):
             self.broke = True
-    
+
     def Trade(self, risk):
         rng = random.random()
-        if  (rng <= risk):
-            self.money = self.money - (self.money * risk)
+        print (rng)
+        print (self.money)
+        if  (rng < risk):
+            self.money = self.money - (1000 * risk)
         else:
-            self.money = self.money + (self.money * risk)
+            self.money = self.money + (1000 * risk)
 
 class Stocks():
     def __init__(self):
-        self.chance = random.random()
+        self.risk = random.random()
         self.encounter = 0
+
     
     
 if __name__ == "__main__":

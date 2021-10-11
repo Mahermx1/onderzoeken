@@ -5,17 +5,20 @@ class Main():
     def __init__(self):
         self.People = []
         self.Stocks = []
-        self.Wealth = 0
+        self.WealthC1 = 0
+        self.WealthC2 = 0
+        self.WealthC3 = 0
         self.Avoid = False
 
-    def create_population(self, size):
-        self.People = []
+    def create_population(self, size, nationality, chance):
         for i in range(0, size):
             person = People()
+            person.chance = chance
+            person.nationality = nationality
             self.People.append(person)
+        
             
     def create_stocks(self, size):
-        self.Stocks = []
         for i in range(0, size):
             stock = Stocks()
             self.Stocks.append(stock)
@@ -34,6 +37,8 @@ class Main():
                     person.encounterchance = random.random()
                     stock = random.choice(self.Stocks)
                     print('Man came across stock ')
+                    print('nationality is {0}'.format(person.nationality))
+                    print('chance is {0}'.format(person.chance))
                     print('Stock risk is {0}'.format(stock.risk))
                     self.AvoidIt(person.chance, stock.risk)
                     if (self.Avoid):
@@ -59,10 +64,19 @@ class Main():
 
     def addwealth(self):
         for person in self.People:
-            self.Wealth += person.money
+            if (person.nationality == "ecuador"):
+                self.WealthC1 += person.money
+            elif (person.nationality == "portugal"):
+                self.WealthC2 += person.money
+            else:
+                self.WealthC3 += person.money
 
     def simulate(self):
-        self.create_population(1000)
+        self.create_population(100, "ecuador", 0.67)
+        self.create_population(100, "singapore", 0.08)
+        self.create_population(100, "portugal", 0.99)
+
+        random.shuffle(self.People)
 
         self.create_stocks(100)
 
@@ -73,7 +87,9 @@ class Main():
         self.results()
 
     def results(self):
-        print('amount of moeny left : {0}'.format(round(self.Wealth)))
+        print('amount of money left ecuador : {0}'.format(round(self.WealthC1)))
+        print('amount of money left portugal : {0}'.format(round(self.WealthC2)))
+        print('amount of money left singapore: {0}'.format(round(self.WealthC3)))
         print('amount of People who are not broke: {0}'.format(len(self.People)))
 
 
@@ -83,6 +99,7 @@ class People():
         self.money = 1000
         self.broke = False
         self.encounterchance = random.random()
+        self.nationality = "nothing"
 
     def Broke(self):
         if (self.money <= 0):
@@ -93,9 +110,9 @@ class People():
         print (rng)
         print (self.money)
         if  (rng < risk):
-            self.money = self.money - (1000 * risk)
+            self.money = self.money - (self.money * risk)
         else:
-            self.money = self.money + (1000 * risk)
+            self.money = self.money + (self.money * risk)
 
 class Stocks():
     def __init__(self):

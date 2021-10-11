@@ -107,12 +107,10 @@ class People():
 
     def Trade(self, risk):
         rng = random.random()
-        print (rng)
-        print (self.money)
         if  (rng < risk):
-            self.money = self.money - (self.money * risk)
+            self.money = self.money - (1000 * risk)
         else:
-            self.money = self.money + (self.money * risk)
+            self.money = self.money + (1000 * risk)
 
 class Stocks():
     def __init__(self):
